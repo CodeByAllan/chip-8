@@ -1,5 +1,9 @@
 package cpu
 
+import (
+	"chip-8/fontset"
+)
+
 type CPU struct {
 	V          [16]byte
 	I          uint16
@@ -18,10 +22,6 @@ func Initialize(cpu *CPU) {
 	cpu.SoundTimer = 0
 	cpu.DelayTimer = 0
 	cpu.SP = 0
-	for i := range cpu.V {
-		cpu.V[i] = 0
-	}
-	for i := range cpu.Screen {
-		cpu.Screen[i] = 0
-	}
+	copy(cpu.Mem[:len(fontset.Chip8Fontset)], fontset.Chip8Fontset[:])
+
 }
