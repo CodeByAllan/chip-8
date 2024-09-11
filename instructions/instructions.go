@@ -23,3 +23,36 @@ func SubRoutine(cpu *common.CPU, opcode uint16) {
 	JumpAddress(cpu, opcode)
 
 }
+func SkipIfEqual(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	nn := opcode & 0x00FF
+	if cpu.V[x] == byte(nn) {
+		cpu.PC += 2
+	}
+}
+func SkipIfNotEqual(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	nn := opcode & 0x00FF
+	if cpu.V[x] != byte(nn) {
+		cpu.PC += 2
+	}
+}
+func SkipIfRegistersEqual(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	y := (opcode & 0x00F0) >> 4
+	if cpu.V[x] == cpu.V[y] {
+		cpu.PC += 2
+	}
+}
+func LoadImmediate(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	nn := opcode & 0x00FF
+	cpu.V[x] = byte(nn)
+}
+
+func AddImmediate(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	nn := opcode & 0x00FF
+	cpu.V[x] += byte(nn)
+
+}
