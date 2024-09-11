@@ -1,7 +1,16 @@
 package instructions
 
-func ClearDisplay(Screen *[64 * 32]byte) {
-	for i := range Screen {
-		Screen[i] = 0
+import "chip-8/common"
+
+func ClearDisplay(cpu *common.CPU) {
+	for i := range cpu.Screen {
+		cpu.Screen[i] = 0
 	}
+}
+func ReturnFromSubroutine(cpu *common.CPU) {
+	if cpu.SP == 0 {
+		return
+	}
+	cpu.SP--
+	cpu.PC = cpu.Stack[cpu.SP]
 }

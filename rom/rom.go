@@ -1,13 +1,13 @@
 package rom
 
 import (
-	"chip-8/cpu"
+	"chip-8/common"
 	"fmt"
 	"io"
 	"os"
 )
 
-func Load(cpu *cpu.CPU, filePath string) error {
+func Load(cpu *common.CPU, filePath string) error {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return fmt.Errorf("unable to open ROM file: %w", err)
