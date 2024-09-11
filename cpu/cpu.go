@@ -31,6 +31,8 @@ func Run(cpu *common.CPU) {
 			default:
 				fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 			}
+		case 0x1000:
+			instructions.JumpAddress(cpu, opcode)
 		default:
 			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 		}

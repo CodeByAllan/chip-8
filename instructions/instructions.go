@@ -14,3 +14,6 @@ func ReturnFromSubroutine(cpu *common.CPU) {
 	cpu.SP--
 	cpu.PC = cpu.Stack[cpu.SP]
 }
+func JumpAddress(cpu *common.CPU, opcode uint16) {
+	cpu.PC = opcode & 0x0FFF
+}
