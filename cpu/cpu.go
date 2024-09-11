@@ -45,6 +45,29 @@ func Run(cpu *common.CPU) {
 			instructions.LoadImmediate(cpu, opcode)
 		case 0x7000:
 			instructions.AddImmediate(cpu, opcode)
+		case 0x8000:
+			switch opcode & 0x000F {
+			case 0x0000:
+				instructions.AssignRegisterValue(cpu, opcode)
+			case 0x0001:
+				instructions.OrRegisterValue(cpu, opcode)
+			case 0x0002:
+				instructions.AndRegisterValue(cpu, opcode)
+			case 0x0003:
+				instructions.XorRegisterValue(cpu, opcode)
+			case 0x0004:
+				instructions.AddRegisterWithCarry(cpu, opcode)
+			case 0x0005:
+				instructions.SubtractRegisterValue(cpu, opcode)
+			case 0x0006:
+				instructions.ShiftRightRegisterValue(cpu, opcode)
+			case 0x0007:
+				instructions.SubtractRegisterFromValue(cpu, opcode)
+			case 0x000E:
+				instructions.ShiftLeftRegisterValue(cpu, opcode)
+			default:
+				fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
+			}
 		default:
 			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 		}
