@@ -133,3 +133,6 @@ func SkipIfRegistersNotEqual(cpu *common.CPU, opcode uint16) {
 		cpu.PC += 2
 	}
 }
+func AssignIndexRegister(cpu *common.CPU, opcode uint16) {
+	cpu.I = opcode & 0x0FFF
+}

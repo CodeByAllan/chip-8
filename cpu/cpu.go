@@ -70,6 +70,8 @@ func Run(cpu *common.CPU) {
 			}
 		case 0x9000:
 			instructions.SkipIfRegistersNotEqual(cpu, opcode)
+		case 0xA000:
+			instructions.AssignIndexRegister(cpu, opcode)
 		default:
 			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 		}
