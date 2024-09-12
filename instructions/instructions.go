@@ -1,6 +1,9 @@
 package instructions
 
-import "chip-8/common"
+import (
+	"chip-8/common"
+	"chip-8/utils"
+)
 
 func ClearDisplay(cpu *common.CPU) {
 	for i := range cpu.Screen {
@@ -139,4 +142,15 @@ func AssignIndexRegister(cpu *common.CPU, opcode uint16) {
 func SkipToAddressWithOffset(cpu *common.CPU, opcode uint16) {
 	offset := opcode & 0x0FFF
 	cpu.PC = offset + uint16(cpu.V[0])
+}
+func SetRegisterIfRandomEquals(cpu *common.CPU, opcode uint16) {
+	i := (opcode & 0x0F00) >> 8
+	x := utils.GenerateRandom8Bit()
+	nn := opcode & 0x00FF
+	if x == uint8(nn) {
+		cpu.V[i] = 1
+	} else {
+		cpu.V[i] = 0
+	}
+
 }
