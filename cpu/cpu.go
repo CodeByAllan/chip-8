@@ -68,6 +68,8 @@ func Run(cpu *common.CPU) {
 			default:
 				fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 			}
+		case 0x9000:
+			instructions.SkipIfRegistersNotEqual(cpu, opcode)
 		default:
 			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 		}

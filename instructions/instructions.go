@@ -126,3 +126,10 @@ func ShiftLeftRegisterValue(cpu *common.CPU, opcode uint16) {
 	cpu.V[0xF] = (cpu.V[x] & 0x80) >> 7
 	cpu.V[x] <<= 1
 }
+func SkipIfRegistersNotEqual(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	y := (opcode & 0x00F0) >> 4
+	if cpu.V[x] != cpu.V[y] {
+		cpu.PC += 2
+	}
+}
