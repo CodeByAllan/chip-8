@@ -5,6 +5,7 @@ import (
 	"chip-8/fontset"
 	"chip-8/instructions"
 	"fmt"
+	"time"
 )
 
 func Initialize(cpu *common.CPU) {
@@ -17,6 +18,7 @@ func Initialize(cpu *common.CPU) {
 
 }
 func Run(cpu *common.CPU) {
+	lastTimerUpdate := time.Now()
 	for {
 		opcode := uint16(cpu.Mem[cpu.PC])<<8 | uint16(cpu.Mem[cpu.PC+1])
 		fmt.Printf("Opcode: 0x%X\n", opcode)
@@ -79,5 +81,7 @@ func Run(cpu *common.CPU) {
 		default:
 			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 		}
+		UpdateTimersIfNeeded(cpu, &lastTimerUpdate)
+		time.Sleep(time.Millisecond * 2)
 	}
 }

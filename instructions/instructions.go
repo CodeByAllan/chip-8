@@ -3,6 +3,7 @@ package instructions
 import (
 	"chip-8/common"
 	"chip-8/utils"
+	"fmt"
 )
 
 func ClearDisplay(cpu *common.CPU) {
@@ -52,7 +53,6 @@ func LoadImmediate(cpu *common.CPU, opcode uint16) {
 	nn := opcode & 0x00FF
 	cpu.V[x] = byte(nn)
 }
-
 func AddImmediate(cpu *common.CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	nn := opcode & 0x00FF
@@ -89,7 +89,6 @@ func AddRegisterWithCarry(cpu *common.CPU, opcode uint16) {
 	} else {
 		cpu.V[0xF] = 0
 	}
-
 }
 func SubtractRegisterValue(cpu *common.CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
@@ -152,5 +151,15 @@ func SetRegisterIfRandomEquals(cpu *common.CPU, opcode uint16) {
 	} else {
 		cpu.V[i] = 0
 	}
-
+}
+func UpdateTimers(cpu *common.CPU) {
+	if cpu.DelayTimer > 0 {
+		cpu.DelayTimer--
+	}
+	if cpu.SoundTimer > 0 {
+		cpu.SoundTimer--
+		if cpu.SoundTimer == 0 {
+			fmt.Printf("BEEP")
+		}
+	}
 }
