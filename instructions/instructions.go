@@ -136,3 +136,7 @@ func SkipIfRegistersNotEqual(cpu *common.CPU, opcode uint16) {
 func AssignIndexRegister(cpu *common.CPU, opcode uint16) {
 	cpu.I = opcode & 0x0FFF
 }
+func SkipToAddressWithOffset(cpu *common.CPU, opcode uint16) {
+	offset := opcode & 0x0FFF
+	cpu.PC = offset + uint16(cpu.V[0])
+}

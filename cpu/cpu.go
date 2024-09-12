@@ -72,6 +72,8 @@ func Run(cpu *common.CPU) {
 			instructions.SkipIfRegistersNotEqual(cpu, opcode)
 		case 0xA000:
 			instructions.AssignIndexRegister(cpu, opcode)
+		case 0xB000:
+			instructions.SkipToAddressWithOffset(cpu, opcode)
 		default:
 			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 		}
