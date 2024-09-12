@@ -163,3 +163,34 @@ func UpdateTimers(cpu *common.CPU) {
 		}
 	}
 }
+func DrawSprite(cpu *common.CPU, opcode uint16) {
+	x := cpu.V[(opcode&0x0F00)>>8]
+	y := cpu.V[(opcode&0x00F0)>>4]
+	n := opcode & 0x000F
+
+	cpu.V[0xF] = 0
+
+	for row := uint16(0); row < uint16(n); row++ {
+		spriteLine := cpu.Mem[cpu.I+row]
+
+		for col := uint16(0); col < 8; col++ {
+			if (spriteLine & (0x80 >> col)) != 0 {
+				xPos := (int(x) + int(col)) % 64
+				yPos := (int(y) + int(row)) % 32
+
+				if xPos < 0 {
+					xPos += 64
+				}
+				if yPos < 0 {
+					yPos += 32
+				}
+
+				if cpu.Screen[yPos*64+xPos] == 1 {
+					cpu.V[0xF] = 1
+				}
+
+				cpu.Screen[yPos*64+xPos] ^= 1
+			}
+		}
+	}
+}
