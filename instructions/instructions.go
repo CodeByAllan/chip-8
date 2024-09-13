@@ -234,3 +234,8 @@ func SetVXToI(cpu *common.CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	cpu.I += uint16(cpu.V[x])
 }
+func SetIToSpriteLocation(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	digit := cpu.V[x]
+	cpu.I = uint16(digit) * 5
+}
