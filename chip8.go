@@ -22,15 +22,10 @@ func Chip8(romPath *string) {
 	cpu.Initialize(cpuInstance)
 	rom.Load(cpuInstance, *romPath)
 
-	stop := make(chan struct{})
-	go func() {
-		cpu.Run(cpuInstance, stop)
-	}()
-
 	for !rl.WindowShouldClose() {
+		cpu.Run(cpuInstance)
 		audio.Audio(cpuInstance)
 		graphics.RenderGraphics(cpuInstance.Screen[:])
 	}
 
-	close(stop)
 }
