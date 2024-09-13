@@ -202,3 +202,7 @@ func IgnoreIfKeyPressed(cpu *common.CPU, opcode uint16) {
 		cpu.PC += 2
 	}
 }
+func SetVXFromDelayTimer(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	cpu.V[x] = cpu.DelayTimer
+}

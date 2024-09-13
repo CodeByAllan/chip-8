@@ -88,6 +88,15 @@ func Run(cpu *common.CPU) {
 		default:
 			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 		}
+	case 0xF000:
+		switch opcode & 0x00FF {
+		case 0x07:
+			instructions.SetVXFromDelayTimer(cpu, opcode)
+
+		default:
+			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
+		}
+
 	default:
 		fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 	}
