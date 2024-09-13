@@ -79,6 +79,15 @@ func Run(cpu *common.CPU) {
 		instructions.SetRegisterIfRandomEquals(cpu, opcode)
 	case 0xD000:
 		instructions.DrawSprite(cpu, opcode)
+	case 0xE000:
+		switch opcode & 0x00FF {
+		case 0x9E:
+			instructions.SkipIfKeyPressed(cpu, opcode)
+		case 0xA1:
+			instructions.IgnoreIfKeyPressed(cpu, opcode)
+		default:
+			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
+		}
 	default:
 		fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 	}

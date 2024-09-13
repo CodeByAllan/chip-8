@@ -190,3 +190,15 @@ func DrawSprite(cpu *common.CPU, opcode uint16) {
 		}
 	}
 }
+func SkipIfKeyPressed(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	if cpu.Keys[cpu.V[x]] == 1 {
+		cpu.PC += 2
+	}
+}
+func IgnoreIfKeyPressed(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	if cpu.Keys[cpu.V[x]] != 1 {
+		cpu.PC += 2
+	}
+}

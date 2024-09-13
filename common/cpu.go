@@ -10,4 +10,5 @@ type CPU struct {
 	SoundTimer byte
 	Stack      [16]uint16
 	SP         uint8
+	Keys       [16]byte
 }
