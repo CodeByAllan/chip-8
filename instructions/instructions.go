@@ -222,3 +222,7 @@ func WaitForKeyPressAndStoreInVX(cpu *common.CPU, opcode uint16, handler *keyboa
 		}
 	}
 }
+func SetDelayTimerFromVX(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	cpu.DelayTimer = cpu.V[x]
+}
