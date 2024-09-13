@@ -239,3 +239,10 @@ func SetIToSpriteLocation(cpu *common.CPU, opcode uint16) {
 	digit := cpu.V[x]
 	cpu.I = uint16(digit) * 5
 }
+func StoreBCD(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	value := cpu.V[x]
+	cpu.Mem[cpu.I] = value / 100
+	cpu.Mem[cpu.I+1] = (value / 10) % 10
+	cpu.Mem[cpu.I+2] = value % 10
+}
