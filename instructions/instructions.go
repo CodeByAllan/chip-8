@@ -3,7 +3,6 @@ package instructions
 import (
 	"chip-8/common"
 	"chip-8/utils"
-	"fmt"
 )
 
 func ClearDisplay(cpu *common.CPU) {
@@ -158,9 +157,6 @@ func UpdateTimers(cpu *common.CPU) {
 	}
 	if cpu.SoundTimer > 0 {
 		cpu.SoundTimer--
-		if cpu.SoundTimer == 0 {
-			fmt.Printf("BEEP")
-		}
 	}
 }
 func DrawSprite(cpu *common.CPU, opcode uint16) {

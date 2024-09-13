@@ -1,6 +1,7 @@
 package chip8
 
 import (
+	"chip-8/audio"
 	"chip-8/common"
 	"chip-8/cpu"
 	"chip-8/graphics"
@@ -12,6 +13,8 @@ import (
 
 func Chip8(romPath *string) {
 	rl.InitWindow(graphics.GraphicsWidth*graphics.Scale, graphics.GraphicsHeight*graphics.Scale, "CHIP-8 Emulator")
+	audio.InitAudio()
+	defer audio.CloseAudio()
 	defer rl.CloseWindow()
 
 	rl.SetTargetFPS(60)
@@ -26,6 +29,7 @@ func Chip8(romPath *string) {
 	}()
 
 	for !rl.WindowShouldClose() {
+		audio.Audio(cpuInstance)
 		time.Sleep(time.Duration(1000/60) * time.Millisecond)
 		graphics.RenderGraphics(cpuInstance.Screen[:])
 	}
