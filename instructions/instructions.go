@@ -2,7 +2,10 @@ package instructions
 
 import (
 	"chip-8/common"
+	"chip-8/keyboard"
 	"chip-8/utils"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 func ClearDisplay(cpu *common.CPU) {
@@ -205,4 +208,17 @@ func IgnoreIfKeyPressed(cpu *common.CPU, opcode uint16) {
 func SetVXFromDelayTimer(cpu *common.CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	cpu.V[x] = cpu.DelayTimer
+}
+func WaitForKeyPressAndStoreInVX(cpu *common.CPU, opcode uint16, handler *keyboard.Handler) {
+	x := (opcode & 0x0F00) >> 8
+
+	for !handler.AnyKeyPressed() {
+		handler.HandleInput(cpu)
+	}
+	for key, value := range handler.KeyMap {
+		if rl.IsKeyDown(key) {
+			cpu.V[x] = value
+			break
+		}
+	}
 }

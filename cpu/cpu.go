@@ -4,6 +4,7 @@ import (
 	"chip-8/common"
 	"chip-8/fontset"
 	"chip-8/instructions"
+	"chip-8/keyboard"
 	"fmt"
 	"time"
 )
@@ -17,7 +18,7 @@ func Initialize(cpu *common.CPU) {
 	copy(cpu.Mem[:len(fontset.Chip8Fontset)], fontset.Chip8Fontset[:])
 
 }
-func Run(cpu *common.CPU) {
+func Run(cpu *common.CPU, keyhandler *keyboard.Handler) {
 	lastTimerUpdate := time.Now()
 	opcode := uint16(cpu.Mem[cpu.PC])<<8 | uint16(cpu.Mem[cpu.PC+1])
 	fmt.Printf("Opcode: 0x%X\n", opcode)
@@ -92,6 +93,8 @@ func Run(cpu *common.CPU) {
 		switch opcode & 0x00FF {
 		case 0x07:
 			instructions.SetVXFromDelayTimer(cpu, opcode)
+		case 0x0A:
+			instructions.WaitForKeyPressAndStoreInVX(cpu, opcode, keyhandler)
 
 		default:
 			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)

@@ -25,10 +25,9 @@ func Chip8(romPath *string) {
 	rom.Load(cpuInstance, *romPath)
 	keyHandler.Initialize()
 	for !rl.WindowShouldClose() {
-		cpu.Run(cpuInstance)
+		cpu.Run(cpuInstance, keyHandler)
 		audio.Audio(cpuInstance)
 		graphics.RenderGraphics(cpuInstance.Screen[:])
 		keyHandler.HandleInput(cpuInstance)
 	}
-
 }
