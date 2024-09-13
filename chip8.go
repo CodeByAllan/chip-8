@@ -6,7 +6,6 @@ import (
 	"chip-8/cpu"
 	"chip-8/graphics"
 	"chip-8/rom"
-	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -30,7 +29,6 @@ func Chip8(romPath *string) {
 
 	for !rl.WindowShouldClose() {
 		audio.Audio(cpuInstance)
-		time.Sleep(time.Duration(1000/60) * time.Millisecond)
 		graphics.RenderGraphics(cpuInstance.Screen[:])
 	}
 
