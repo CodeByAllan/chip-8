@@ -99,6 +99,8 @@ func Run(cpu *common.CPU, keyhandler *keyboard.Handler) {
 			instructions.SetDelayTimerFromVX(cpu, opcode)
 		case 0x18:
 			instructions.SetSoundTimerFromVX(cpu, opcode)
+		case 0x1E:
+			instructions.SetVXToI(cpu, opcode)
 		default:
 			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 		}

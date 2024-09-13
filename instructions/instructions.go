@@ -230,3 +230,7 @@ func SetSoundTimerFromVX(cpu *common.CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	cpu.SoundTimer = cpu.V[x]
 }
+func SetVXToI(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	cpu.I += uint16(cpu.V[x])
+}
