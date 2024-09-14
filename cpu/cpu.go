@@ -6,7 +6,6 @@ import (
 	"chip-8/instructions"
 	"chip-8/keyboard"
 	"fmt"
-	"time"
 )
 
 func Initialize(cpu *common.CPU) {
@@ -19,7 +18,6 @@ func Initialize(cpu *common.CPU) {
 
 }
 func Run(cpu *common.CPU, keyhandler *keyboard.Handler) {
-	lastTimerUpdate := time.Now()
 	opcode := uint16(cpu.Mem[cpu.PC])<<8 | uint16(cpu.Mem[cpu.PC+1])
 	fmt.Printf("Opcode: 0x%X\n", opcode)
 	cpu.PC += 2
@@ -116,5 +114,4 @@ func Run(cpu *common.CPU, keyhandler *keyboard.Handler) {
 	default:
 		fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 	}
-	UpdateTimersIfNeeded(cpu, &lastTimerUpdate)
 }

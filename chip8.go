@@ -7,6 +7,7 @@ import (
 	"chip-8/graphics"
 	"chip-8/keyboard"
 	"chip-8/rom"
+	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -16,7 +17,7 @@ func Chip8(romPath *string) {
 	audio.InitAudio()
 	defer audio.CloseAudio()
 	defer rl.CloseWindow()
-
+	lastTimerUpdate := time.Now()
 	rl.SetTargetFPS(60)
 
 	cpuInstance := &common.CPU{}
@@ -26,6 +27,7 @@ func Chip8(romPath *string) {
 	keyHandler.Initialize()
 	for !rl.WindowShouldClose() {
 		cpu.Run(cpuInstance, keyHandler)
+		cpu.UpdateTimersIfNeeded(cpuInstance, &lastTimerUpdate)
 		audio.Audio(cpuInstance)
 		graphics.RenderGraphics(cpuInstance.Screen[:])
 		keyHandler.HandleInput(cpuInstance)
