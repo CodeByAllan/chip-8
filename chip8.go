@@ -18,7 +18,6 @@ func Chip8(romPath *string) {
 	defer audio.CloseAudio()
 	defer rl.CloseWindow()
 	lastTimerUpdate := time.Now()
-	rl.SetTargetFPS(60)
 
 	cpuInstance := &common.CPU{}
 	keyHandler := &keyboard.Handler{}
