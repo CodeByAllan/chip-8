@@ -246,3 +246,9 @@ func StoreBCD(cpu *common.CPU, opcode uint16) {
 	cpu.Mem[cpu.I+1] = (value / 10) % 10
 	cpu.Mem[cpu.I+2] = value % 10
 }
+func StoreRegisters(cpu *common.CPU, opcode uint16) {
+	x := (opcode & 0x0F00) >> 8
+	for i := uint16(0); i <= x; i++ {
+		cpu.Mem[cpu.I+i] = cpu.V[i]
+	}
+}
