@@ -107,6 +107,8 @@ func Run(cpu *common.CPU, keyhandler *keyboard.Handler) {
 			instructions.StoreBCD(cpu, opcode)
 		case 0x55:
 			instructions.StoreRegisters(cpu, opcode)
+		case 0x65:
+			instructions.LoadRegisters(cpu, opcode)
 		default:
 			fmt.Printf("Opcode desconhecido: 0x%X\n", opcode)
 		}
