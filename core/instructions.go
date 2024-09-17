@@ -1,87 +1,86 @@
-package instructions
+package core
 
 import (
-	"chip-8/common"
 	"chip-8/keyboard"
 	"chip-8/utils"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-func ClearDisplay(cpu *common.CPU) {
-	for i := range cpu.Screen {
-		cpu.Screen[i] = 0
+func clearDisplay(cpu *CPU) {
+	for i := range cpu.Display.Screen {
+		cpu.Display.Screen[i] = 0
 	}
 }
-func ReturnFromSubroutine(cpu *common.CPU) {
+func returnFromSubroutine(cpu *CPU) {
 	if cpu.SP == 0 {
 		return
 	}
 	cpu.SP--
 	cpu.PC = cpu.Stack[cpu.SP]
 }
-func JumpAddress(cpu *common.CPU, opcode uint16) {
+func jumpAddress(cpu *CPU, opcode uint16) {
 	cpu.PC = opcode & 0x0FFF
 }
-func SubRoutine(cpu *common.CPU, opcode uint16) {
+func subRoutine(cpu *CPU, opcode uint16) {
 	cpu.Stack[cpu.SP] = cpu.PC
 	cpu.SP++
-	JumpAddress(cpu, opcode)
+	jumpAddress(cpu, opcode)
 
 }
-func SkipIfEqual(cpu *common.CPU, opcode uint16) {
+func skipIfEqual(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	nn := opcode & 0x00FF
 	if cpu.V[x] == byte(nn) {
 		cpu.PC += 2
 	}
 }
-func SkipIfNotEqual(cpu *common.CPU, opcode uint16) {
+func skipIfNotEqual(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	nn := opcode & 0x00FF
 	if cpu.V[x] != byte(nn) {
 		cpu.PC += 2
 	}
 }
-func SkipIfRegistersEqual(cpu *common.CPU, opcode uint16) {
+func skipIfRegistersEqual(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	y := (opcode & 0x00F0) >> 4
 	if cpu.V[x] == cpu.V[y] {
 		cpu.PC += 2
 	}
 }
-func LoadImmediate(cpu *common.CPU, opcode uint16) {
+func loadImmediate(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	nn := opcode & 0x00FF
 	cpu.V[x] = byte(nn)
 }
-func AddImmediate(cpu *common.CPU, opcode uint16) {
+func addImmediate(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	nn := opcode & 0x00FF
 	cpu.V[x] += byte(nn)
 
 }
-func AssignRegisterValue(cpu *common.CPU, opcode uint16) {
+func assignRegisterValue(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	y := (opcode & 0x00F0) >> 4
 	cpu.V[x] = cpu.V[y]
 }
-func OrRegisterValue(cpu *common.CPU, opcode uint16) {
+func orRegisterValue(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	y := (opcode & 0x00F0) >> 4
 	cpu.V[x] = cpu.V[x] | cpu.V[y]
 }
-func AndRegisterValue(cpu *common.CPU, opcode uint16) {
+func andRegisterValue(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	y := (opcode & 0x00F0) >> 4
 	cpu.V[x] = cpu.V[x] & cpu.V[y]
 }
-func XorRegisterValue(cpu *common.CPU, opcode uint16) {
+func xorRegisterValue(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	y := (opcode & 0x00F0) >> 4
 	cpu.V[x] = cpu.V[x] ^ cpu.V[y]
 }
-func AddRegisterWithCarry(cpu *common.CPU, opcode uint16) {
+func addRegisterWithCarry(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	y := (opcode & 0x00F0) >> 4
 	sum := uint16(cpu.V[x]) + uint16(cpu.V[y])
@@ -92,7 +91,7 @@ func AddRegisterWithCarry(cpu *common.CPU, opcode uint16) {
 		cpu.V[0xF] = 0
 	}
 }
-func SubtractRegisterValue(cpu *common.CPU, opcode uint16) {
+func subtractRegisterValue(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	y := (opcode & 0x00F0) >> 4
 	vx := uint16(cpu.V[x])
@@ -105,12 +104,12 @@ func SubtractRegisterValue(cpu *common.CPU, opcode uint16) {
 		cpu.V[0xF] = 1
 	}
 }
-func ShiftRightRegisterValue(cpu *common.CPU, opcode uint16) {
+func shiftRightRegisterValue(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	cpu.V[0xF] = cpu.V[x] & 0x01
 	cpu.V[x] >>= 1
 }
-func SubtractRegisterFromValue(cpu *common.CPU, opcode uint16) {
+func subtractRegisterFromValue(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	y := (opcode & 0x00F0) >> 4
 	vx := uint16(cpu.V[x])
@@ -125,26 +124,26 @@ func SubtractRegisterFromValue(cpu *common.CPU, opcode uint16) {
 		cpu.V[0xF] = 0
 	}
 }
-func ShiftLeftRegisterValue(cpu *common.CPU, opcode uint16) {
+func shiftLeftRegisterValue(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	cpu.V[0xF] = (cpu.V[x] & 0x80) >> 7
 	cpu.V[x] <<= 1
 }
-func SkipIfRegistersNotEqual(cpu *common.CPU, opcode uint16) {
+func skipIfRegistersNotEqual(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	y := (opcode & 0x00F0) >> 4
 	if cpu.V[x] != cpu.V[y] {
 		cpu.PC += 2
 	}
 }
-func AssignIndexRegister(cpu *common.CPU, opcode uint16) {
+func assignIndexRegister(cpu *CPU, opcode uint16) {
 	cpu.I = opcode & 0x0FFF
 }
-func SkipToAddressWithOffset(cpu *common.CPU, opcode uint16) {
+func skipToAddressWithOffset(cpu *CPU, opcode uint16) {
 	offset := opcode & 0x0FFF
 	cpu.PC = offset + uint16(cpu.V[0])
 }
-func SetRegisterIfRandomEquals(cpu *common.CPU, opcode uint16) {
+func setRegisterIfRandomEquals(cpu *CPU, opcode uint16) {
 	i := (opcode & 0x0F00) >> 8
 	x := utils.GenerateRandom8Bit()
 	nn := opcode & 0x00FF
@@ -154,7 +153,7 @@ func SetRegisterIfRandomEquals(cpu *common.CPU, opcode uint16) {
 		cpu.V[i] = 0
 	}
 }
-func UpdateTimers(cpu *common.CPU) {
+func updateTimers(cpu *CPU) {
 	if cpu.DelayTimer > 0 {
 		cpu.DelayTimer--
 	}
@@ -162,7 +161,7 @@ func UpdateTimers(cpu *common.CPU) {
 		cpu.SoundTimer--
 	}
 }
-func DrawSprite(cpu *common.CPU, opcode uint16) {
+func drawSprite(cpu *CPU, opcode uint16) {
 	x := cpu.V[(opcode&0x0F00)>>8]
 	y := cpu.V[(opcode&0x00F0)>>4]
 	n := opcode & 0x000F
@@ -184,32 +183,32 @@ func DrawSprite(cpu *common.CPU, opcode uint16) {
 					yPos += 32
 				}
 
-				if cpu.Screen[yPos*64+xPos] == 1 {
+				if cpu.Display.Screen[yPos*64+xPos] == 1 {
 					cpu.V[0xF] = 1
 				}
 
-				cpu.Screen[yPos*64+xPos] ^= 1
+				cpu.Display.Screen[yPos*64+xPos] ^= 1
 			}
 		}
 	}
 }
-func SkipIfKeyPressed(cpu *common.CPU, opcode uint16) {
+func skipIfKeyPressed(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	if cpu.Keys[cpu.V[x]] == 1 {
 		cpu.PC += 2
 	}
 }
-func IgnoreIfKeyPressed(cpu *common.CPU, opcode uint16) {
+func ignoreIfKeyPressed(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	if cpu.Keys[cpu.V[x]] != 1 {
 		cpu.PC += 2
 	}
 }
-func SetVXFromDelayTimer(cpu *common.CPU, opcode uint16) {
+func setVXFromDelayTimer(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	cpu.V[x] = cpu.DelayTimer
 }
-func WaitForKeyPressAndStoreInVX(cpu *common.CPU, opcode uint16, handler *keyboard.Handler) {
+func waitForKeyPressAndStoreInVX(cpu *CPU, opcode uint16, handler *keyboard.Handler) {
 	x := (opcode & 0x0F00) >> 8
 
 	for !handler.AnyKeyPressed() {
@@ -222,37 +221,37 @@ func WaitForKeyPressAndStoreInVX(cpu *common.CPU, opcode uint16, handler *keyboa
 		}
 	}
 }
-func SetDelayTimerFromVX(cpu *common.CPU, opcode uint16) {
+func setDelayTimerFromVX(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	cpu.DelayTimer = cpu.V[x]
 }
-func SetSoundTimerFromVX(cpu *common.CPU, opcode uint16) {
+func setSoundTimerFromVX(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	cpu.SoundTimer = cpu.V[x]
 }
-func SetVXToI(cpu *common.CPU, opcode uint16) {
+func setVXToI(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	cpu.I += uint16(cpu.V[x])
 }
-func SetIToSpriteLocation(cpu *common.CPU, opcode uint16) {
+func setIToSpriteLocation(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	digit := cpu.V[x]
 	cpu.I = uint16(digit) * 5
 }
-func StoreBCD(cpu *common.CPU, opcode uint16) {
+func storeBCD(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	value := cpu.V[x]
 	cpu.Mem[cpu.I] = value / 100
 	cpu.Mem[cpu.I+1] = (value / 10) % 10
 	cpu.Mem[cpu.I+2] = value % 10
 }
-func StoreRegisters(cpu *common.CPU, opcode uint16) {
+func storeRegisters(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	for i := uint16(0); i <= x; i++ {
 		cpu.Mem[cpu.I+i] = cpu.V[i]
 	}
 }
-func LoadRegisters(cpu *common.CPU, opcode uint16) {
+func loadRegisters(cpu *CPU, opcode uint16) {
 	x := (opcode & 0x0F00) >> 8
 	for i := uint16(0); i <= x; i++ {
 		cpu.V[i] = cpu.Mem[cpu.I+i]

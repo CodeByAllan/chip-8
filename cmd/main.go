@@ -14,5 +14,5 @@ func main() {
 		return
 	}
 
-	chip8.Chip8(romPath)
+	chip8.Run(romPath)
 }

@@ -1,8 +1,6 @@
 package keyboard
 
 import (
-	"chip-8/common"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -19,13 +17,12 @@ func (handler *Handler) Initialize() {
 	}
 
 }
-func (handler *Handler) HandleInput(cpu *common.CPU) {
-	for i := 0; i < 16; i++ {
-		cpu.Keys[i] = 0
-	}
+func (handler *Handler) HandleInput(storage keyStorage) {
+	storage.ClearKeys()
+
 	for key, value := range handler.KeyMap {
 		if rl.IsKeyDown(key) {
-			cpu.Keys[value] = 1
+			storage.SetKey(value, 1)
 		}
 	}
 }

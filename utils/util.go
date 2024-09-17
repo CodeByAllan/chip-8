@@ -5,8 +5,11 @@ import (
 	"time"
 )
 
-var rng = rand.New(rand.NewSource(time.Now().UnixNano()))
+func newRNG() *rand.Rand {
+	return rand.New(rand.NewSource(time.Now().UnixNano()))
+}
 
 func GenerateRandom8Bit() uint8 {
+	rng := newRNG()
 	return uint8(rng.Intn(256))
 }

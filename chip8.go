@@ -2,33 +2,40 @@ package chip8
 
 import (
 	"chip-8/audio"
-	"chip-8/common"
-	"chip-8/cpu"
+	"chip-8/core"
 	"chip-8/graphics"
 	"chip-8/keyboard"
-	"chip-8/rom"
 	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-func Chip8(romPath *string) {
-	rl.InitWindow(graphics.GraphicsWidth*graphics.Scale, graphics.GraphicsHeight*graphics.Scale, "CHIP-8 Emulator")
-	audio.InitAudio()
-	defer audio.CloseAudio()
+func Run(romPath *string) {
+	rl.InitWindow(64*10, 32*10, "CHIP-8 Emulator")
+
 	defer rl.CloseWindow()
+	display := &graphics.Display{}
+	cpu := &core.CPU{Display: display}
+	keyHandler := &keyboard.Handler{}
+	sound := &audio.Sound{}
+
+	cpu.Initialize()
+	display.Initialize()
+	sound.Initialize()
+
+	defer sound.Close()
+
+	cpu.Load(*romPath)
+
+	keyHandler.Initialize()
+
 	lastTimerUpdate := time.Now()
 
-	cpuInstance := &common.CPU{}
-	keyHandler := &keyboard.Handler{}
-	cpu.Initialize(cpuInstance)
-	rom.Load(cpuInstance, *romPath)
-	keyHandler.Initialize()
 	for !rl.WindowShouldClose() {
-		cpu.Run(cpuInstance, keyHandler)
-		cpu.UpdateTimersIfNeeded(cpuInstance, &lastTimerUpdate)
-		audio.Audio(cpuInstance)
-		graphics.RenderGraphics(cpuInstance.Screen[:])
-		keyHandler.HandleInput(cpuInstance)
+		cpu.Run(keyHandler)
+		cpu.UpdateTimersIfNeeded(&lastTimerUpdate)
+		sound.Play(cpu)
+		display.RenderDisplay()
+		keyHandler.HandleInput(cpu)
 	}
 }
