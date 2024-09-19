@@ -1,8 +1,13 @@
 package audio
 
 import (
+	_ "embed" // Import necessário para usar go:embed
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
+
+//go:embed ..\assets\beep.wav
+var beepWav []byte
 
 type Sound struct {
 	beep rl.Sound
@@ -10,7 +15,9 @@ type Sound struct {
 
 func (sound *Sound) Initialize() {
 	rl.InitAudioDevice()
-	sound.beep = rl.LoadSound("./assets/beep.wav")
+	wavData := rl.LoadWaveFromMemory(".wav", beepWav, int32(len(beepWav)))
+	sound.beep = rl.LoadSoundFromWave(wavData)
+	rl.UnloadWave(wavData)
 }
 
 func (sound *Sound) Close() {
