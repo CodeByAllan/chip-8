@@ -13,4 +13,6 @@ type CPU struct {
 	Stack      [16]uint16
 	SP         uint8
 	Keys       [16]byte
+	Cycles     int
+	Timer      int
 }

@@ -12,8 +12,8 @@ import (
 
 func Run(romPath *string) {
 	rl.InitWindow(64*10, 32*10, "CHIP-8 Emulator")
-
 	defer rl.CloseWindow()
+
 	display := &graphics.Display{}
 	cpu := &core.CPU{Display: display}
 	keyHandler := &keyboard.Handler{}
@@ -21,21 +21,30 @@ func Run(romPath *string) {
 
 	cpu.Initialize()
 	display.Initialize()
+	keyHandler.Initialize()
 	sound.Initialize()
-
 	defer sound.Close()
 
 	cpu.Load(*romPath)
 
-	keyHandler.Initialize()
+	cycleTicker := time.NewTicker(time.Second / time.Duration(cpu.Cycles))
+	defer cycleTicker.Stop()
 
-	lastTimerUpdate := time.Now()
+	timerTicker := time.NewTicker(time.Second / time.Duration(cpu.Timer))
+	defer timerTicker.Stop()
 
 	for !rl.WindowShouldClose() {
-		cpu.Run(keyHandler)
-		cpu.UpdateTimersIfNeeded(&lastTimerUpdate)
-		sound.Play(cpu)
-		display.RenderDisplay()
-		keyHandler.HandleInput(cpu)
+		select {
+		case <-cycleTicker.C:
+			cpu.Run(keyHandler)
+
+		case <-timerTicker.C:
+			cpu.UpdateTimers()
+			sound.Play(cpu)
+
+		default:
+			display.RenderDisplay()
+			keyHandler.HandleInput(cpu)
+		}
 	}
 }

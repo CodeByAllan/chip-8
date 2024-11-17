@@ -1,12 +1,10 @@
 package core
 
-import (
-	"time"
-)
-
-func (cpu *CPU) UpdateTimersIfNeeded(lastTimerUpdate *time.Time) {
-	if time.Since(*lastTimerUpdate) >= (time.Second / 60) {
-		updateTimers(cpu)
-		*lastTimerUpdate = time.Now()
+func (cpu *CPU) UpdateTimers() {
+	if cpu.DelayTimer > 0 {
+		cpu.DelayTimer--
+	}
+	if cpu.SoundTimer > 0 {
+		cpu.SoundTimer--
 	}
 }
